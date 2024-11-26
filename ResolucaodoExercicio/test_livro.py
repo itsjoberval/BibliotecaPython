@@ -30,3 +30,16 @@ def conexao_teste():
     conexao.commit()
     yield conexao
     conexao.close()
+
+    def test_cadastrar_livro(conexao_teste):
+    livro = Livro("Teste", "Autor", "Editora", "Gênero", 10)
+    resultado = livro.cadastrar_livro(
+        conexao_teste, "Teste", "Autor", "Editora", "Gênero", 10
+    )
+    assert resultado is None
+
+    cursor = conexao_teste.cursor()
+    cursor.execute("SELECT * FROM Livro WHERE titulo = ?", ("Teste",))
+    livro_cadastrado = cursor.fetchone()
+    assert livro_cadastrado is not None
+    assert livro_cadastrado[1] == "Autor"
