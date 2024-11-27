@@ -71,7 +71,8 @@ class Livro(LivroAbstrato):
 
 
 class Biblioteca:
-    def cadastrar_usuario(self, conexao, id, nome, nacionalidade, telefone):
+    @staticmethod
+    def cadastrar_usuario(conexao, id, nome, nacionalidade, telefone):
         cursor = conexao.cursor()
         cursor.execute(
             "INSERT INTO Usuario (id, nome, nacionalidade, telefone) VALUES (?, ?, ?, ?)",
@@ -80,12 +81,14 @@ class Biblioteca:
         conexao.commit()
         return "Usuário cadastrado com sucesso!"
 
-    def listar_livros(self, conexao):
+    @staticmethod
+    def listar_livros(conexao):
         cursor = conexao.cursor()
         livros = cursor.execute("SELECT * FROM Livro").fetchall()
         return livros
 
-    def historico_emprestimos(self, conexao):
+    @staticmethod
+    def historico_emprestimos(conexao):
         cursor = conexao.cursor()
         result = cursor.execute(
             """
@@ -113,7 +116,6 @@ def menu():
 
 def main():
     conexao = sqlite3.connect("biblioteca_poo.db")
-    biblioteca = Biblioteca()
     livro = Livro("", "", "", "", "")
 
     while True:
@@ -123,7 +125,7 @@ def main():
             nome = input("Digite seu nome: ")
             nacionalidade = input("Digite sua nacionalidade: ")
             telefone = input("Digite seu telefone: ")
-            print(biblioteca.cadastrar_usuario(conexao, id, nome, nacionalidade, telefone))
+            print(Biblioteca.cadastrar_usuario(conexao, id, nome, nacionalidade, telefone))
 
         elif opcao == "2":
             titulo = input("Qual o título do livro: ")
@@ -147,13 +149,13 @@ def main():
             print(livro.devolver(conexao, titulo, data_devolucao))
 
         elif opcao == "5":
-            livros = biblioteca.listar_livros(conexao)
+            livros = Biblioteca.listar_livros(conexao)
             print("Livros cadastrados:")
             for livro in livros:
                 print(livro)
 
         elif opcao == "6":
-            historico = biblioteca.historico_emprestimos(conexao)
+            historico = Biblioteca.historico_emprestimos(conexao)
             print("Histórico de empréstimos:")
             for registro in historico:
                 print(registro)
