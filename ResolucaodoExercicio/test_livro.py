@@ -31,49 +31,51 @@ def conexao_teste():
     yield conexao
     conexao.close()
 
-    def test_cadastrar_livro(conexao_teste):
-        livro = Livro("Teste", "Autor", "Editora", "Gênero", 10)
-        resultado = livro.cadastrar_livro(
-            conexao_teste, "Teste", "Autor", "Editora", "Gênero", 10
-        )
-        assert resultado is None
 
-        cursor = conexao_teste.cursor()
-        cursor.execute("SELECT * FROM Livro WHERE titulo = ?", ("Teste",))
-        livro_cadastrado = cursor.fetchone()
-        assert livro_cadastrado is not None
-        assert livro_cadastrado[1] == "Autor"
+def test_cadastrar_livro(conexao_teste):
+    livro = Livro("Teste", "Autor", "Editora", "Gênero", 10)
+    resultado = livro.cadastrar_livro(
+        conexao_teste, "Teste", "Autor", "Editora", "Gênero", 10
+    )
+    assert resultado is None
 
-    def test_emprestar_livro(conexao_teste):
-        livro = Livro("Teste", "Autor", "Editora", "Gênero", 10)
-        livro.cadastrar_livro(
-            conexao_teste, "Teste", "Autor", "Editora", "Gênero", 10
-        )
+    cursor = conexao_teste.cursor()
+    cursor.execute("SELECT * FROM Livro WHERE titulo = ?", ("Teste",))
+    livro_cadastrado = cursor.fetchone()
+    assert livro_cadastrado is not None
+    assert livro_cadastrado[1] == "Autor"
 
-        resultado = livro.emprestar(
-            conexao_teste, "Teste", "123", "2024-11-26", "2024-12-10"
-        )
-        assert resultado == "Empréstimo realizado com sucesso!"
 
-        cursor = conexao_teste.cursor()
-        cursor.execute("SELECT qtd_exemplares FROM Livro WHERE titulo = ?", ("Teste",))
-        exemplares = cursor.fetchone()[0]
-        assert exemplares == 9
+def test_emprestar_livro(conexao_teste):
+    livro = Livro("Teste", "Autor", "Editora", "Gênero", 10)
+    livro.cadastrar_livro(
+        conexao_teste, "Teste", "Autor", "Editora", "Gênero", 10
+    )
 
-    def test_devolver_livro(conexao_teste):
-        livro = Livro("Teste", "Autor", "Editora", "Gênero", 10)
-        livro.cadastrar_livro(
-            conexao_teste, "Teste", "Autor", "Editora", "Gênero", 10
-        )
-        livro.emprestar(
-            conexao_teste, "Teste", "123", "2024-11-26", "2024-12-10"
-        )
+    resultado = livro.emprestar(
+        conexao_teste, "Teste", "123", "2024-11-26", "2024-12-10"
+    )
+    assert resultado == "Empréstimo realizado com sucesso!"
 
-        resultado = livro.devolver(conexao_teste, "Teste", "2024-12-10")
-        assert resultado == "Devolução realizada com sucesso!"
+    cursor = conexao_teste.cursor()
+    cursor.execute("SELECT qtd_exemplares FROM Livro WHERE titulo = ?", ("Teste",))
+    exemplares = cursor.fetchone()[0]
+    assert exemplares == 9
 
-        cursor = conexao_teste.cursor()
-        cursor.execute("SELECT qtd_exemplares FROM Livro WHERE titulo = ?", ("Teste",))
-        exemplares = cursor.fetchone()[0]
-        assert exemplares == 10
 
+def test_devolver_livro(conexao_teste):
+    livro = Livro("Teste", "Autor", "Editora", "Gênero", 10)
+    livro.cadastrar_livro(
+        conexao_teste, "Teste", "Autor", "Editora", "Gênero", 10
+    )
+    livro.emprestar(
+        conexao_teste, "Teste", "123", "2024-11-26", "2024-12-10"
+    )
+
+    resultado = livro.devolver(conexao_teste, "Teste", "2024-12-10")
+    assert resultado == "Devolução realizada com sucesso!"
+
+    cursor = conexao_teste.cursor()
+    cursor.execute("SELECT qtd_exemplares FROM Livro WHERE titulo = ?", ("Teste",))
+    exemplares = cursor.fetchone()[0]
+    assert exemplares == 10
