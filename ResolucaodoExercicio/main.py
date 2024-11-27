@@ -71,6 +71,9 @@ class Livro(LivroAbstrato):
 
 
 class Biblioteca:
+    def __init__(self):
+        pass
+
     @staticmethod
     def cadastrar_usuario(conexao, id, nome, nacionalidade, telefone):
         cursor = conexao.cursor()
