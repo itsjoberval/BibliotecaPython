@@ -21,18 +21,18 @@ def conexao_teste():
     conexao.close()
 
     def test_cadastrar_usuario(conexao_teste):
-    biblioteca = Biblioteca()
-    id_usuario = "123"
-    nome = "Teste User"
-    nacionalidade = "Brasil"
-    telefone = "12345678"
-    
-    resultado = biblioteca.cadastrar_usuario(conexao_teste, id_usuario, nome, nacionalidade, telefone)
-    assert resultado == "Usuário cadastrado com sucesso!"
+        biblioteca = Biblioteca()
+        id_usuario = "123"
+        nome = "Teste User"
+        nacionalidade = "Brasil"
+        telefone = "12345678"
+        
+        resultado = biblioteca.cadastrar_usuario(conexao_teste, id_usuario, nome, nacionalidade, telefone)
+        assert resultado == "Usuário cadastrado com sucesso!"
 
-    # Verificar se o usuário foi adicionado
-    cursor = conexao_teste.cursor()
-    cursor.execute("SELECT * FROM Usuario WHERE id = ?", (id_usuario,))
-    usuario = cursor.fetchone()
-    assert usuario is not None
-    assert usuario[1] == nome
+        # Verificar se o usuário foi adicionado
+        cursor = conexao_teste.cursor()
+        cursor.execute("SELECT * FROM Usuario WHERE id = ?", (id_usuario,))
+        usuario = cursor.fetchone()
+        assert usuario is not None
+        assert usuario[1] == nome
