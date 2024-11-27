@@ -43,3 +43,19 @@ def conexao_teste():
     livro_cadastrado = cursor.fetchone()
     assert livro_cadastrado is not None
     assert livro_cadastrado[1] == "Autor"
+
+    def test_emprestar_livro(conexao_teste):
+    livro = Livro("Teste", "Autor", "Editora", "Gênero", 10)
+    livro.cadastrar_livro(
+        conexao_teste, "Teste", "Autor", "Editora", "Gênero", 10
+    )
+
+    resultado = livro.emprestar(
+        conexao_teste, "Teste", "123", "2024-11-26", "2024-12-10"
+    )
+    assert resultado == "Empréstimo realizado com sucesso!"
+
+    cursor = conexao_teste.cursor()
+    cursor.execute("SELECT qtd_exemplares FROM Livro WHERE titulo = ?", ("Teste",))
+    exemplares = cursor.fetchone()[0]
+    assert exemplares == 9
